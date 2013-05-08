@@ -8,5 +8,6 @@
 	],
 	"importPaths": ["."],
 	"targetType" : "library",
-	"libs-posix" : ["hyperclient"]
+	"libs-posix" : ["hyperclient"],
+	"sourcePaths" : [ "./deimos" ]
 }
