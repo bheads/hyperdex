@@ -28,15 +28,14 @@
 
 module deimos.hyperdex.hyperclient;
 
-
 public import deimos.hyperdex.hyperdex;
 
-private import std.stdint;
-
 extern(C):
+public:
 nothrow:
 
-struct hyperclient {}
+struct hyperclient;
+
 struct hyperclient_attribute
 {
     const char* attr; /* NULL-terminated */
@@ -101,7 +100,7 @@ enum hyperclient_returncode
     HYPERCLIENT_GARBAGE      = 8575
 }
 
-hyperclient* hyperclient_create(const char* coordinator, uint16_t port);
+hyperclient* hyperclient_create(const char* coordinator, ushort port);
 void hyperclient_destroy(hyperclient* client);
 hyperclient_returncode hyperclient_add_space(hyperclient* client, const char* description);
 hyperclient_returncode hyperclient_rm_space(hyperclient* client, const char* space);
@@ -126,7 +125,7 @@ hyperclient_returncode hyperclient_rm_space(hyperclient* client, const char* spa
  * - client, status, attrs, attrs_sz must point to memory that exists until the
  *   request is considered complete
  */
-int64_t hyperclient_get(hyperclient* client, const char* space, const char* key,
+long hyperclient_get(hyperclient* client, const char* space, const char* key,
                 size_t key_sz, hyperclient_returncode* status,
                 hyperclient_attribute** attrs, size_t* attrs_sz);
 
@@ -142,11 +141,11 @@ int64_t hyperclient_get(hyperclient* client, const char* space, const char* key,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_put(hyperclient* client, const char* space, const char* key,
+long hyperclient_put(hyperclient* client, const char* space, const char* key,
                 size_t key_sz, const hyperclient_attribute* attrs,
                 size_t attrs_sz, hyperclient_returncode* status);
 
-int64_t hyperclient_put_if_not_exist(hyperclient* client, const char* space, const char* key,
+long hyperclient_put_if_not_exist(hyperclient* client, const char* space, const char* key,
                              size_t key_sz, const hyperclient_attribute* attrs,
                              size_t attrs_sz, hyperclient_returncode* status);
 
@@ -167,7 +166,7 @@ int64_t hyperclient_put_if_not_exist(hyperclient* client, const char* space, con
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_cond_put(hyperclient* client, const char* space,
+long hyperclient_cond_put(hyperclient* client, const char* space,
                      const char* key, size_t key_sz,
                      const hyperclient_attribute_check* checks, size_t checks_sz,
                      const hyperclient_attribute* attrs, size_t attrs_sz,
@@ -179,7 +178,7 @@ int64_t hyperclient_cond_put(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_del(hyperclient* client, const char* space, const char* key,
+long hyperclient_del(hyperclient* client, const char* space, const char* key,
                 size_t key_sz, hyperclient_returncode* status);
 
 /* Atomically add the values given to the existing attribute values
@@ -198,7 +197,7 @@ int64_t hyperclient_del(hyperclient* client, const char* space, const char* key,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_add(hyperclient* client, const char* space,
+long hyperclient_atomic_add(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -219,7 +218,7 @@ int64_t hyperclient_atomic_add(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_sub(hyperclient* client, const char* space,
+long hyperclient_atomic_sub(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -240,7 +239,7 @@ int64_t hyperclient_atomic_sub(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_mul(hyperclient* client, const char* space,
+long hyperclient_atomic_mul(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -261,7 +260,7 @@ int64_t hyperclient_atomic_mul(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_div(hyperclient* client, const char* space,
+long hyperclient_atomic_div(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -284,7 +283,7 @@ int64_t hyperclient_atomic_div(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_mod(hyperclient* client, const char* space,
+long hyperclient_atomic_mod(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -305,7 +304,7 @@ int64_t hyperclient_atomic_mod(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_and(hyperclient* client, const char* space,
+long hyperclient_atomic_and(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -326,7 +325,7 @@ int64_t hyperclient_atomic_and(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_or(hyperclient* client, const char* space,
+long hyperclient_atomic_or(hyperclient* client, const char* space,
                       const char* key, size_t key_sz,
                       const hyperclient_attribute* attrs, size_t attrs_sz,
                       hyperclient_returncode* status);
@@ -347,7 +346,7 @@ int64_t hyperclient_atomic_or(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_atomic_xor(hyperclient* client, const char* space,
+long hyperclient_atomic_xor(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -368,7 +367,7 @@ int64_t hyperclient_atomic_xor(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_string_prepend(hyperclient* client, const char* space,
+long hyperclient_string_prepend(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
@@ -389,7 +388,7 @@ int64_t hyperclient_string_prepend(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_string_append(hyperclient* client, const char* space,
+long hyperclient_string_append(hyperclient* client, const char* space,
                           const char* key, size_t key_sz,
                           const hyperclient_attribute* attrs, size_t attrs_sz,
                           hyperclient_returncode* status);
@@ -411,7 +410,7 @@ int64_t hyperclient_string_append(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_list_lpush(hyperclient* client, const char* space,
+long hyperclient_list_lpush(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
@@ -433,99 +432,99 @@ int64_t hyperclient_list_lpush(hyperclient* client, const char* space,
  * - client, status must point to memory that exists until the request is
  *   considered complete
  */
-int64_t hyperclient_list_rpush(hyperclient* client, const char* space,
+long hyperclient_list_rpush(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
 
-int64_t hyperclient_set_add(hyperclient* client, const char* space,
+long hyperclient_set_add(hyperclient* client, const char* space,
                     const char* key, size_t key_sz,
                     const hyperclient_attribute* attrs, size_t attrs_sz,
                     hyperclient_returncode* status);
 
-int64_t hyperclient_set_remove(hyperclient* client, const char* space,
+long hyperclient_set_remove(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
 
-int64_t hyperclient_set_intersect(hyperclient* client, const char* space,
+long hyperclient_set_intersect(hyperclient* client, const char* space,
                           const char* key, size_t key_sz,
                           const hyperclient_attribute* attrs, size_t attrs_sz,
                           hyperclient_returncode* status);
 
-int64_t hyperclient_set_union(hyperclient* client, const char* space,
+long hyperclient_set_union(hyperclient* client, const char* space,
                       const char* key, size_t key_sz,
                       const hyperclient_attribute* attrs, size_t attrs_sz,
                       hyperclient_returncode* status);
 
-int64_t hyperclient_map_add(hyperclient* client, const char* space,
+long hyperclient_map_add(hyperclient* client, const char* space,
                     const char* key, size_t key_sz,
                     const hyperclient_map_attribute* attrs, size_t attrs_sz,
                     hyperclient_returncode* status);
 
-int64_t hyperclient_cond_map_add(hyperclient* client, const char* space,
+long hyperclient_cond_map_add(hyperclient* client, const char* space,
                          const char* key, size_t key_sz,
                          const hyperclient_attribute_check* checks, size_t checks_sz,
                          const hyperclient_map_attribute* attrs, size_t attrs_sz,
                          hyperclient_returncode* status);
 
-int64_t hyperclient_map_remove(hyperclient* client, const char* space,
+long hyperclient_map_remove(hyperclient* client, const char* space,
                        const char* key, size_t key_sz,
                        const hyperclient_map_attribute* attrs, size_t attrs_sz,
                        hyperclient_returncode* status);
 
-int64_t hyperclient_cond_map_remove(hyperclient* client, const char* space,
+long hyperclient_cond_map_remove(hyperclient* client, const char* space,
                             const char* key, size_t key_sz,
                             const hyperclient_attribute_check* checks, size_t checks_sz,
                             const hyperclient_map_attribute* attrs, size_t attrs_sz,
                             hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_add(hyperclient* client, const char* space,
+long hyperclient_map_atomic_add(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_sub(hyperclient* client, const char* space,
+long hyperclient_map_atomic_sub(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_mul(hyperclient* client, const char* space,
+long hyperclient_map_atomic_mul(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_div(hyperclient* client, const char* space,
+long hyperclient_map_atomic_div(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_mod(hyperclient* client, const char* space,
+long hyperclient_map_atomic_mod(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_and(hyperclient* client, const char* space,
+long hyperclient_map_atomic_and(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_or(hyperclient* client, const char* space,
+long hyperclient_map_atomic_or(hyperclient* client, const char* space,
                           const char* key, size_t key_sz,
                           const hyperclient_map_attribute* attrs, size_t attrs_sz,
                           hyperclient_returncode* status);
 
-int64_t hyperclient_map_atomic_xor(hyperclient* client, const char* space,
+long hyperclient_map_atomic_xor(hyperclient* client, const char* space,
                            const char* key, size_t key_sz,
                            const hyperclient_map_attribute* attrs, size_t attrs_sz,
                            hyperclient_returncode* status);
 
-int64_t hyperclient_map_string_prepend(hyperclient* client, const char* space,
+long hyperclient_map_string_prepend(hyperclient* client, const char* space,
                                const char* key, size_t key_sz,
                                const hyperclient_map_attribute* attrs, size_t attrs_sz,
                                hyperclient_returncode* status);
 
-int64_t hyperclient_map_string_append(hyperclient* client, const char* space,
+long hyperclient_map_string_append(hyperclient* client, const char* space,
                               const char* key, size_t key_sz,
                               const hyperclient_map_attribute* attrs, size_t attrs_sz,
                               hyperclient_returncode* status);
@@ -545,14 +544,14 @@ int64_t hyperclient_map_string_append(hyperclient* client, const char* space,
  * contacted for the search, -1 will be returned, and *status will be set to the
  * error.
  */
-int64_t hyperclient_search(hyperclient* client, const char* space,
+long hyperclient_search(hyperclient* client, const char* space,
                    const hyperclient_attribute_check* checks, size_t checks_sz,
                    hyperclient_returncode* status,
                    hyperclient_attribute** attrs, size_t* attrs_sz);
 
 /* Perform a search, and build a string describing the costs of the search.
  */
-int64_t hyperclient_search_describe(hyperclient* client, const char* space,
+long hyperclient_search_describe(hyperclient* client, const char* space,
                             const hyperclient_attribute_check* checks, size_t checks_sz,
                             hyperclient_returncode* status, const char** description);
 
@@ -573,9 +572,9 @@ int64_t hyperclient_search_describe(hyperclient* client, const char* space,
  * contacted for the search, -1 will be returned, and *status will be set to the
  * error.
  */
-int64_t hyperclient_sorted_search(hyperclient* client, const char* space,
+long hyperclient_sorted_search(hyperclient* client, const char* space,
                           const hyperclient_attribute_check* checks, size_t checks_sz,
-                          const char* sort_by, uint64_t limit, int maximize,
+                          const char* sort_by, ulong limit, int maximize,
                           hyperclient_returncode* status,
                           hyperclient_attribute** attrs, size_t* attrs_sz);
 
@@ -589,13 +588,13 @@ int64_t hyperclient_sorted_search(hyperclient* client, const char* space,
  * This is a best effort call.  It may miss objects that are updated
  * concurrently with the search and it will not tolerate failures.
  */
-int64_t hyperclient_group_del(hyperclient* client, const char* space,
+long hyperclient_group_del(hyperclient* client, const char* space,
                       const hyperclient_attribute_check* checks, size_t checks_sz,
                       hyperclient_returncode* status);
 
-int64_t hyperclient_count(hyperclient* client, const char* space,
+long hyperclient_count(hyperclient* client, const char* space,
                   const hyperclient_attribute_check* checks, size_t checks_sz,
-                  hyperclient_returncode* status, uint64_t* result);
+                  hyperclient_returncode* status, ulong* result);
 
 /* Handle I/O until at least one event is complete (either a key-op finishes, or
  * a search returns one item).
@@ -605,7 +604,7 @@ int64_t hyperclient_count(hyperclient* client, const char* space,
  * all pending operations (e.g., a failure to connect to the coordinator) are
  * passed through the "status" parameter to loop.
  */
-int64_t hyperclient_loop(hyperclient* client, int timeout,
+long hyperclient_loop(hyperclient* client, int timeout,
                  hyperclient_returncode* status);
 
 /* Retrieve the datatype for the attribute "name" in the space "space".

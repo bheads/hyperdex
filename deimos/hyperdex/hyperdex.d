@@ -32,6 +32,7 @@
  */
 module deimos.hyperdex.hyperdex;
 
+public:
 extern(C):
 nothrow:
 
@@ -89,10 +90,10 @@ enum hyperpredicate
  * for more information.
  */
 
-auto containerType(auto x) { return x & 9664; }
-auto containerElem(auto x) { return x & 9223; }
-auto containerVal(auto x) { return x & 9223; }
-auto containerKey(auto x) { return ((x & 56) >> 3) | (x & 9216); }
-bool isPrimitive(auto x) { return containerType(x) == hyperdatatype.HYPERDATATYPE_GENERIC; }
-auto createContainer(auto c, auto e) { return cast(hyperdatatype)((c) | (e & 7)); }
-auto createContainer2(auto c, auto k, auto v) { return cast(hyperdatatype)((C) | ((K & 7) << 3) | (V & 7)); }
+auto containerType(T)(T x) { return x & 9664; }
+auto containerElem(T)(T x) { return x & 9223; }
+auto containerVal(T)(T x) { return x & 9223; }
+auto containerKey(T)(T x) { return ((x & 56) >> 3) | (x & 9216); }
+auto isPrimitive(T)(T x) { return containerType(x) == hyperdatatype.HYPERDATATYPE_GENERIC; }
+auto createContainer(T1, T2)(T1 c, T2 e) { return cast(hyperdatatype)((c) | (e & 7)); }
+auto createContainer2(T1, T2, T3)(T1 c, T2 k, T3 v) { return cast(hyperdatatype)((C) | ((K & 7) << 3) | (V & 7)); }
