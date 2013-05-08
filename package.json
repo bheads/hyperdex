@@ -7,6 +7,6 @@
 		"Byron Heads"
 	],
 	"importPaths": ["."],
-	"targetType" : "sourceLibrary",
+	"targetType" : "library",
 	"libs-posix" : ["hyperclient"]
 }
