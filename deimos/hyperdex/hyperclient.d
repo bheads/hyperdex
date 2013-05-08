@@ -28,6 +28,9 @@
 
 module deimos.hyperdex.hyperclient;
 
+
+public import deimos.hyperdex.hyperdex;
+
 private import std.stdint;
 
 extern(C):
