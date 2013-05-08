@@ -1,0 +1,12 @@
+{
+	"name": "hyperdex",
+	"description": "HyperDex HyperClient D Bindings",
+	"homepage": "http://hyperdex.org",
+	"copyright": "Copyright © 2011, Cornell University",
+	"authors": [
+		"Byron Heads"
+	],
+	"importPaths": ["."],
+	"targetType" : "sourceLibrary",
+	"libs-posix" : ["hyperclient"]
+}
