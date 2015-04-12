@@ -1,3 +1,5 @@
+module deimos.hyperdex.core;
+
 /* Copyright (c) 2012, Cornell University
  * All rights reserved.
  *
@@ -27,14 +29,25 @@
  */
 
 
-/**
- * This file includes enums and constants that are used throughout HyperDex.
- */
-module deimos.hyperdex.hyperdex;
-
-public:
 extern(C):
+public:
 nothrow:
+
+/* This file includes enums and constants that are used throughout HyperDex. */
+
+/* Datatype occupies [9216, 9728)
+ * The chosen constants are significant as they allow properties of the datatype
+ * to be determined with simple mask operations.
+ */
+
+hyperdatatype CONTAINER_TYPE (hyperdatatype X) { return (cast(hyperdatatype)((X) & 9664)); }
+hyperdatatype CONTAINER_ELEM (hyperdatatype X) { return (cast(hyperdatatype)((X) & 9223)); }
+hyperdatatype CONTAINER_VAL (hyperdatatype X) { return (cast(hyperdatatype)((X) & 9223)); }
+hyperdatatype CONTAINER_KEY (hyperdatatype X) { return (cast(hyperdatatype)((((X) & 56) >> 3) | ((X) & 9216))); }
+bool IS_PRIMITIVE (hyperdatatype X) { return (CONTAINER_TYPE(X) == hyperdatatype.HYPERDATATYPE_GENERIC); }
+hyperdatatype CREATE_CONTAINER (hyperdatatype C, hyperdatatype E) { return (cast(hyperdatatype)((C) | ((E) & 7))); }
+hyperdatatype CREATE_CONTAINER2 (hyperdatatype C, hyperdatatype K, hyperdatatype V) { return (cast(hyperdatatype)((C) | (((K) & 7) << 3) | ((V) & 7))); }
+hyperdatatype RESTRICT_CONTAINER (hyperdatatype C, hyperdatatype V) { return (cast(hyperdatatype)((C) | ((V) & 7))); }
 
 enum hyperdatatype
 {
@@ -43,6 +56,7 @@ enum hyperdatatype
     HYPERDATATYPE_STRING    = 9217,
     HYPERDATATYPE_INT64     = 9218,
     HYPERDATATYPE_FLOAT     = 9219,
+    HYPERDATATYPE_DOCUMENT  = 9223,
 
     /* List types */
     HYPERDATATYPE_LIST_GENERIC = 9280,
@@ -71,29 +85,36 @@ enum hyperdatatype
     HYPERDATATYPE_MAP_FLOAT_INT64    = 9434,
     HYPERDATATYPE_MAP_FLOAT_FLOAT    = 9435,
 
-    // Returned if the server acts up
+    /*Timestamp types */
+    HYPERDATATYPE_TIMESTAMP_GENERIC  = 9472,
+    HYPERDATATYPE_TIMESTAMP_SECOND   = 9473,
+    HYPERDATATYPE_TIMESTAMP_MINUTE   = 9474,
+    HYPERDATATYPE_TIMESTAMP_HOUR     = 9475,
+    HYPERDATATYPE_TIMESTAMP_DAY      = 9476,
+    HYPERDATATYPE_TIMESTAMP_WEEK     = 9477,
+    HYPERDATATYPE_TIMESTAMP_MONTH    = 9478,
+
+    /* Special (internal) types */
+    HYPERDATATYPE_MACAROON_SECRET    = 9664,
+
+    /* Returned if the server acts up */
     HYPERDATATYPE_GARBAGE   = 9727
-}
+};
 
 /* Predicate occupies [9728, 9856) */
 enum hyperpredicate
 {
     HYPERPREDICATE_FAIL          = 9728,
     HYPERPREDICATE_EQUALS        = 9729,
+    HYPERPREDICATE_LESS_THAN     = 9738,
     HYPERPREDICATE_LESS_EQUAL    = 9730,
-    HYPERPREDICATE_GREATER_EQUAL = 9731
-}
-
-/* Datatype occupies [9216, 9728)
- * The chosen constants are significant as they allow properties of the datatype
- * to be determined with simple mask operations.  See datatypes/coercion.{h,cc}
- * for more information.
- */
-
-auto containerType(T)(T x) { return x & 9664; }
-auto containerElem(T)(T x) { return x & 9223; }
-auto containerVal(T)(T x) { return x & 9223; }
-auto containerKey(T)(T x) { return ((x & 56) >> 3) | (x & 9216); }
-auto isPrimitive(T)(T x) { return containerType(x) == hyperdatatype.HYPERDATATYPE_GENERIC; }
-auto createContainer(T1, T2)(T1 c, T2 e) { return cast(hyperdatatype)((c) | (e & 7)); }
-auto createContainer2(T1, T2, T3)(T1 c, T2 k, T3 v) { return cast(hyperdatatype)((C) | ((K & 7) << 3) | (V & 7)); }
+    HYPERPREDICATE_GREATER_EQUAL = 9731,
+    HYPERPREDICATE_GREATER_THAN  = 9739,
+    HYPERPREDICATE_CONTAINS_LESS_THAN = 9732, /* alias of HYPERPREDICATE_LENGTH_LESS_EQUAL */
+    HYPERPREDICATE_REGEX         = 9733,
+    HYPERPREDICATE_LENGTH_EQUALS        = 9734,
+    HYPERPREDICATE_LENGTH_LESS_EQUAL    = 9735,
+    HYPERPREDICATE_LENGTH_GREATER_EQUAL = 9736,
+    HYPERPREDICATE_CONTAINS      = 9737
+    /* NEXT = 9740 */
+};

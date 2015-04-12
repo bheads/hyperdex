@@ -2,3 +2,6 @@
 *.so
 *.dll
 *.dylib
+*.lib
+.dub/*
+dub.selections.json

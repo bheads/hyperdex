@@ -13,8 +13,6 @@ HyperDex's key features -- namely its rich API, strong consistency, and fault to
 
 Of course, if the data is rarely modified, or it has no consistency or fault-tolerance requirements, HyperDex may not be for called for, though it still outperforms other NoSQL stores that provide weaker guarantees."
 
-###Version: 1.0.rc4
+###Version: 1.6.0
 
 Status: All of the standard api is ported.  In the future I may port over the Warp api as needed.
-
-Future: Create a D wrapper around the api to make it cleaner and easier to use.

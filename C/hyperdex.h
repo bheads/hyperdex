@@ -29,21 +29,26 @@
 #ifndef hyperdex_h_
 #define hyperdex_h_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
+
 /* This file includes enums and constants that are used throughout HyperDex. */
 
 /* Datatype occupies [9216, 9728)
  * The chosen constants are significant as they allow properties of the datatype
- * to be determined with simple mask operations.  See datatypes/coercion.{h,cc}
- * for more information.
+ * to be determined with simple mask operations.
  */
 
-#define CONTAINER_TYPE(X) ((X) & 9664)
-#define CONTAINER_ELEM(X) ((X) & 9223)
-#define CONTAINER_VAL(X) ((X) & 9223)
-#define CONTAINER_KEY(X) ((((X) & 56) >> 3) | ((X) & 9216))
+#define CONTAINER_TYPE(X) ((enum hyperdatatype)((X) & 9664))
+#define CONTAINER_ELEM(X) ((enum hyperdatatype)((X) & 9223))
+#define CONTAINER_VAL(X) ((enum hyperdatatype)((X) & 9223))
+#define CONTAINER_KEY(X) ((enum hyperdatatype)((((X) & 56) >> 3) | ((X) & 9216)))
 #define IS_PRIMITIVE(X) (CONTAINER_TYPE(X) == HYPERDATATYPE_GENERIC)
-#define CREATE_CONTAINER(C, E) ((enum hyperdatatype)((C) | (E & 7)))
-#define CREATE_CONTAINER2(C, K, V) ((enum hyperdatatype)((C) | ((K & 7) << 3) | (V & 7)))
+#define CREATE_CONTAINER(C, E) ((enum hyperdatatype)((C) | ((E) & 7)))
+#define CREATE_CONTAINER2(C, K, V) ((enum hyperdatatype)((C) | (((K) & 7) << 3) | ((V) & 7)))
+#define RESTRICT_CONTAINER(C, V) ((enum hyperdatatype)((C) | ((V) & 7)))
 
 enum hyperdatatype
 {
@@ -52,6 +57,7 @@ enum hyperdatatype
     HYPERDATATYPE_STRING    = 9217,
     HYPERDATATYPE_INT64     = 9218,
     HYPERDATATYPE_FLOAT     = 9219,
+    HYPERDATATYPE_DOCUMENT  = 9223,
 
     /* List types */
     HYPERDATATYPE_LIST_GENERIC = 9280,
@@ -80,7 +86,19 @@ enum hyperdatatype
     HYPERDATATYPE_MAP_FLOAT_INT64    = 9434,
     HYPERDATATYPE_MAP_FLOAT_FLOAT    = 9435,
 
-    // Returned if the server acts up
+    /*Timestamp types */
+    HYPERDATATYPE_TIMESTAMP_GENERIC  = 9472,
+    HYPERDATATYPE_TIMESTAMP_SECOND   = 9473,
+    HYPERDATATYPE_TIMESTAMP_MINUTE   = 9474,
+    HYPERDATATYPE_TIMESTAMP_HOUR     = 9475,
+    HYPERDATATYPE_TIMESTAMP_DAY      = 9476,
+    HYPERDATATYPE_TIMESTAMP_WEEK     = 9477,
+    HYPERDATATYPE_TIMESTAMP_MONTH    = 9478,
+
+    /* Special (internal) types */
+    HYPERDATATYPE_MACAROON_SECRET    = 9664,
+
+    /* Returned if the server acts up */
     HYPERDATATYPE_GARBAGE   = 9727
 };
 
@@ -89,13 +107,23 @@ enum hyperpredicate
 {
     HYPERPREDICATE_FAIL          = 9728,
     HYPERPREDICATE_EQUALS        = 9729,
+    HYPERPREDICATE_LESS_THAN     = 9738,
     HYPERPREDICATE_LESS_EQUAL    = 9730,
-    HYPERPREDICATE_GREATER_EQUAL = 9731
+    HYPERPREDICATE_GREATER_EQUAL = 9731,
+    HYPERPREDICATE_GREATER_THAN  = 9739,
+    HYPERPREDICATE_CONTAINS_LESS_THAN = 9732, /* alias of HYPERPREDICATE_LENGTH_LESS_EQUAL */
+    HYPERPREDICATE_REGEX         = 9733,
+    HYPERPREDICATE_LENGTH_EQUALS        = 9734,
+    HYPERPREDICATE_LENGTH_LESS_EQUAL    = 9735,
+    HYPERPREDICATE_LENGTH_GREATER_EQUAL = 9736,
+    HYPERPREDICATE_CONTAINS      = 9737
+    /* NEXT = 9740 */
 };
 
 #ifdef __cplusplus
+} /* extern "C" */
 
-// C++
+/* C++ */
 #include <iostream>
 
 std::ostream&
